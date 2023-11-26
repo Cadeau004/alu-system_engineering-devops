@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Update system packages
+sudo apt-get update
+sudo apt-get install nginx -y
+
+# Configure redirection in Nginx
+sudo bash -c 'cat << EOF > /etc/nginx/sites-available/redirect_me
+server {
+    listen 80;
+    server_name Cadeau004.tech;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    # Add other configurations as needed
+}
+EOF'
+
+# Enable the redirection site
+sudo ln -s /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
+
+# Test Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
