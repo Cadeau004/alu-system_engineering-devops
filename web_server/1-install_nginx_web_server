@@ -1,31 +1,18 @@
 #!/usr/bin/env bash
-# This Bash script installs and configures Nginx on a new Ubuntu machine
+# Commands to install Nginx on Web-Sever-01
 
-# Update system packages and install Nginx
-sudo apt-get update -y
-sudo apt-get install nginx -y
+# Updating Packages before making Installations
+sudo apt-get update
+sudo apt-get -y install nginx
 
-# Configure Nginx to listen on port 80 and return "Holberton School" at root
-sudo bash -c 'cat << EOF > /etc/nginx/sites-available/default
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+# Configuring the Uncomplicated Firewall (UFW) to allow incoming traffic for the Nginx HTTP service
+sudo ufw allow 'Nginx HTTP'
 
-    root /var/www/html;
-    index index.html index.htm;
+# Creating an index.html page
+echo "Holberton School" | sudo tee /var/www/html/index.html
 
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
+# Testing Nginx configurations for Syntax errors
+sudo nginx -t
 
-    location = / {
-        echo "Holberton School for the win!";
-    }
-}
-EOF'
-
-# Restart Nginx without using systemctl
-sudo kill -s HUP $(cat /var/run/nginx.pid)
-
-# Display confirmation message
-echo "Nginx installed and configured successfully!"
+# Restarting Nginx
+sudo service nginx start
